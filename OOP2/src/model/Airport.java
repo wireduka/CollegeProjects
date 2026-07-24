@@ -8,7 +8,7 @@ public class Airport {
     public static final int MIN_Y = -90;
     public static final int MAX_Y = 90;
     
-    // Enum
+    // Enumerate
     public enum AirportVar{
     	CODE,NAME,COORDINATE
     }

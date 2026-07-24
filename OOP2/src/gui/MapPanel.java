@@ -33,15 +33,22 @@ public class MapPanel extends Canvas implements Observer{
 			public void mouseClicked(MouseEvent e) {
 				
 				Airport clickedAirport = getAirportAt(e.getX(),e.getY());
-				if(clickedAirport == selected) { selected = null; controller.resumeTimer();}
-				else if(clickedAirport != null) {selected = clickedAirport; controller.pauseTimer();}
+				if(clickedAirport == selected && clickedAirport.isVisible()) { 
+					
+					selected = null;
+					controller.resumeTimer();
+				}
+				else if(clickedAirport != null && clickedAirport.isVisible()) {
+					
+					selected = clickedAirport;
+					controller.pauseTimer();
+				}
 
 				
 			}
 		});
 		airportTable.addObserver(this);
 	}
-
 	@Override
 	public void onObserverSignal() {
 		repaint();
@@ -51,8 +58,12 @@ public class MapPanel extends Canvas implements Observer{
 		g.setColor(Color.GRAY);
 		g.fillRect(0,0,getWidth(), getHeight());
 		
-		// Draws a rectangle at the specified pixel position
+		// Draws a square at the specified pixel position
 		for(Airport at : airportTable.getAirports()) {
+			
+			// Skips if airport is not visible
+			if(!at.isVisible()) continue;
+			
 			int x = toPixelX(at.getX());
 			int y = toPixelY(at.getY());
 			
