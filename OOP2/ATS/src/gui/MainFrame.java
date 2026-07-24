@@ -4,7 +4,6 @@ import utils.ImportExportManager.FileType;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.awt.Panel;
 
 import logic.Controller;
 import model.DataType;
@@ -16,8 +15,10 @@ public class MainFrame extends Frame implements WindowClosing{
 	private MenuBuilder menuBuilder = new MenuBuilder();
 	private Controller controller = new Controller(this);
 	
-	private AirportTablePanel atp = new AirportTablePanel(controller.getAirportTable()); // observer
+	private AirportTablePanel atp = new AirportTablePanel(controller.getAirportTable()); 
 	private FlightTablePanel ftp = new FlightTablePanel(controller.getFlightTable());
+	private MapPanel mp = new MapPanel(controller.getAirportTable(),controller);
+	
 	// Frame constructor
 	public MainFrame() {
 		
@@ -27,7 +28,7 @@ public class MainFrame extends Frame implements WindowClosing{
 		setupMenu();
 		setLayout(new BorderLayout());
 		add(atp,BorderLayout.WEST);
-		add(new Panel(), BorderLayout.CENTER);
+		add(mp, BorderLayout.CENTER);
 		add(ftp,BorderLayout.EAST);
 		
 		this.setVisible(true);

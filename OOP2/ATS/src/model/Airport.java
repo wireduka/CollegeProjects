@@ -17,6 +17,7 @@ public class Airport {
 	private String code;
 	private String name;
 	private Coordinate coordinate;
+	private boolean visible = true;
 	// TODO departureQueue, nextAvaliableTime
 	
 	public Airport(String code, String name, Coordinate coord) {
@@ -30,10 +31,12 @@ public class Airport {
 	public String getName() {return name;}
 	public int getX() {return coordinate.getX();}
 	public int getY() {return coordinate.getY();}
+	public boolean isVisible() {return visible;}
 	
 	// Setter methods
 	public void setCode(String code) {this.code = code;}
 	public void setName(String name) {this.name = name;}
+	public void setVisible(boolean state) {this.visible = state;}
 
 
 }

@@ -37,7 +37,6 @@ public class Controller {
 		if(file == null) return;
 		
 		ioManager.handle(file, type, mode);
-		
 		inactivityTimer.resetTimer();
 	}
 	
@@ -56,7 +55,6 @@ public class Controller {
 		if(text == null) return;
 		
 		ioManager.handle(text, type);
-		
 		inactivityTimer.resetTimer();
 	}
 	
@@ -68,5 +66,8 @@ public class Controller {
 		return flightTable;
 	}
 	
+	// Timer pausing
+	public void pauseTimer() { inactivityTimer.pauseTimer(); }
+	public void resumeTimer() { inactivityTimer.resumeTimer(); }
 
 }

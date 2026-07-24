@@ -9,6 +9,7 @@ public class InactivityTimer extends Thread{
 	private static final int TIMEOUT = 55000;
 	private volatile long lastAction = System.currentTimeMillis();
 	private volatile boolean countdownActive = false;
+	private volatile boolean paused = false;
 	private Frame owner;
 	
 	public InactivityTimer(Frame owner) {
@@ -23,7 +24,7 @@ public class InactivityTimer extends Thread{
 				
 				long elapsedTime = System.currentTimeMillis();
 				elapsedTime = elapsedTime - lastAction;
-				if(elapsedTime >= TIMEOUT && !countdownActive) {
+				if(elapsedTime >= TIMEOUT && !countdownActive && !paused) {
 					
 					countdownActive = true;
 					CountdownDialog cd = new CountdownDialog(owner);
@@ -52,7 +53,7 @@ public class InactivityTimer extends Thread{
 		}
 	}
 	
-	public void resetTimer() {
-		lastAction = System.currentTimeMillis();
-	}
+	public void resetTimer() {lastAction = System.currentTimeMillis();}
+	public void pauseTimer() {paused = true;}
+	public void resumeTimer() {paused = false; resetTimer();}
 }
