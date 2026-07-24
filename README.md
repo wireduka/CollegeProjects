@@ -6,6 +6,6 @@ Repository containing coursework, laboratory assignments, and larger programming
 
 - **OOP1** – Command Line Interpreter (C++)
 - **OOP2** – Air Traffic Simulation (Java)
-- **AR** – Computer architecture laboratory assignment
+- **AR** – Computer Architecture - lab assignment
 
 Each project includes its own README with implementation details and usage instructions.
