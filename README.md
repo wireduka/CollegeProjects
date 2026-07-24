@@ -4,8 +4,10 @@ Repository containing coursework, laboratory assignments, and larger programming
 
 ## Structure
 
-- **OOP1** – Object Oriented Programming 1 – Command Line Interpreter (C++)
-- **OOP2** – Object Oriented Programming 2 – Air Traffic Simulation (Java)
-- **AR**   – Computer Architecture – Lab Assignment
+| Project | Description |
+|---------|-------------|
+| OOP1    | Object Oriented Programming 1 – Command Line Interpreter (C++) |
+| OOP2    | Object Oriented Programming 2 – Air Traffic Simulation (Java) |
+| AR      | Computer Architecture – Lab Assignment |
 
 Each project includes its own README with implementation details and usage instructions.
