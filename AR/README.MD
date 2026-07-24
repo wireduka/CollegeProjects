@@ -1,7 +1,3 @@
-Vidim. U suštini ti treba **README/description u istom stilu kao primer**, ali prilagođen tvom domaćem. Tvoj primer je dosta detaljan i više liči na tehničku dokumentaciju nego na običan README. Za tvoj slučaj bih napisao nešto ovako:
-
----
-
 # Homework Assignment: Computer Architecture
 
 ## Section A (Variant A1)
@@ -230,7 +226,3 @@ Where:
 * `int` values are 16-bit wide.
 * Memory addresses are 16-bit wide.
 * The smallest addressable memory unit is 16 bits.
-
----
-
-Ovo je praktično isti nivo dokumentacije kao primer koji si poslao, ali je **100% usklađeno sa tvojim zadatkom** (xor umesto sum, druga IV tabela, DMA zadaci isti kao u tekstu).
