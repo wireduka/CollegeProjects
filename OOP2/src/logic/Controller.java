@@ -26,7 +26,7 @@ public class Controller {
     private Clock animationClock = new Clock(200);
 	private static Controller instance = null;
 	
-	
+		
 	public static void initialize(Frame owner) {
         if (instance == null) {
             instance = new Controller(owner);
@@ -128,5 +128,7 @@ public class Controller {
 	public String getSimulationTimeString() {return simulationClock.getClockString();}
 	public int getSimulationTime() {return simulationClock.getSimulationTime();}
 	public boolean isSimulationActive() {return simulationActive;}
+	
+	public Clock getAnimationClock() {return animationClock;}
 
 }

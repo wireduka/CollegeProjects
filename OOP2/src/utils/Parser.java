@@ -79,9 +79,9 @@ public class Parser {
 			String departure = flightToken.get(2);
 			
 			int duration = Integer.parseInt(flightToken.get(3));
+			int departureTime = parseTime(departure,duration);
 			
 			parseFlightCodes(from,to);
-			int departureTime = parseTime(departure,duration);
 			generateFlight(from,to,departureTime,duration);
 		}
 		flightTable.sortFlights();
@@ -90,7 +90,15 @@ public class Parser {
 	
 	// Generates a new flight
 	private void generateFlight(String from, String to, int departureTime, int duration) {
-		Flight flight = new Flight(from,to,departureTime,duration);
+		
+		Airport fromAirport = null;
+		Airport toAirport = null;
+		
+		for(Airport at : airportTable.getAirports()) {
+			if(from.equals(at.getCode())) fromAirport = at;
+			if(to.equals(at.getCode())) toAirport = at;
+		}
+		Flight flight = new Flight(fromAirport,toAirport,departureTime,duration);
 		flightTable.add(flight);
 		
 	}
@@ -133,15 +141,20 @@ public class Parser {
 		boolean foundFrom = false;
 		boolean foundTo = false;
 		
+		String codeFrom = null;
+		String codeTo = null;
+		
 		for(Airport airport : airportTable.getAirports()) {
-			if(airport.getCode().equals(from)) foundFrom = true;
-			if(airport.getCode().equals(to)) foundTo = true;
+			if(airport.getCode().equals(from)) {foundFrom = true; codeFrom = airport.getCode();}
+			if(airport.getCode().equals(to)) {foundTo = true; codeTo = airport.getCode();}
 		}
 		
+		if(!foundFrom && !foundTo) {throw new InvalidDataException("Flight: " + from + "->" + to + " does not have a corresponding target and departure airport");}
 		if(!foundFrom) {throw new InvalidDataException("Flight with departure " + from + " does not have a corresponding departure airport");}
 		if(!foundTo) {throw new InvalidDataException("Flight with destination " + to + " does not have a corresponding target airport");}
-		if(!foundFrom && !foundTo) {throw new InvalidDataException("Flight: " + from + "->" + to + " does not have a corresponding target and departure airport");}
+		if(codeFrom.equals(codeTo)) {throw new InvalidDataException("Flight: " + from + "->" + to + " is invalid, flight cant have the same corresponding target and departure airport");}
 		
+
 	}
 	
 	// Helper method
@@ -168,7 +181,10 @@ public class Parser {
 	private void addMatchingFlights() {
 		for(Flight f : flightTable.getFlights()) {
 			for(Airport a : airportTable.getAirports()) {
-				if(f.getFrom().equals(a.getCode())) {a.addFlight(f);}
+				if(f.getFrom().equals(a.getCode())) {
+					a.addFlight(f);
+					f.setCoordinate(a.getX(), a.getY());
+				}
 			}
 		}
 	}

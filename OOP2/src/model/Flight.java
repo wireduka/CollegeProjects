@@ -13,10 +13,18 @@ public class Flight {
 	private int duration;
 	private FlightStatus status = FlightStatus.WAITING;
 	
-	public Flight(String from, String to, int departure, int duration) {
+	private Coordinate defaultCoordinate = null;
+	private Coordinate currCoordinate = null;
+	
+	private Airport fromAirport = null;
+	private Airport toAirport = null;
+	
+	public Flight(Airport fromAirport, Airport toAirport, int departure, int duration) {
 		
-		this.from = from;
-		this.to = to;
+		this.fromAirport = fromAirport;
+		this.toAirport = toAirport;
+		this.from = fromAirport.getCode();
+		this.to = toAirport.getCode();
 		this.departure = departure;
 		this.duration = duration;
 	}
@@ -31,6 +39,22 @@ public class Flight {
 	public FlightStatus getStatus() { return status; }
 	public void setStatus(FlightStatus status) { this.status = status; }
 	
+	public Airport getFromAirport() {return fromAirport;}
+	public Airport getToAirport() {return toAirport;}
+	
+	public synchronized Coordinate getCoordinate() {
+		
+		if(currCoordinate == null) {return defaultCoordinate;}
+		else {return currCoordinate;}
+		
+	}
+	
+	public synchronized void setCoordinate(int x, int y) {
+		
+		if(defaultCoordinate == null) {defaultCoordinate = new Coordinate(x,y);}
+		else {currCoordinate = new Coordinate(x,y);}
+	}
+		
 	// Converts time to a readable format
 	public String getDepartureString() {
 		
