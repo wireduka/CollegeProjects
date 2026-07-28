@@ -9,73 +9,43 @@ import java.awt.event.MouseEvent;
 
 import logic.BlinkTimer;
 import logic.Controller;
+import logic.EventType;
+import logic.Observer;
 import model.Airport;
 import model.AirportTable;
-import model.Observer;
 
 public class MapPanel extends Canvas implements Observer{
 	
 	private AirportTable airportTable;
-	private Airport selected;
+	private static Airport selectedCurr;
 	private BlinkTimer blinkTimer;
 	private static final int RECTANGLE_SIZE = 20;
 	
-	
-	public MapPanel(AirportTable airportTable, Controller controller) {
+	// Constructor
+	public MapPanel() {
 		
-		this.airportTable = airportTable;
+		this.airportTable = Controller.getInstance().getAirportTable();;
 		this.blinkTimer = new BlinkTimer(this);
+		
 		blinkTimer.start();
+		airportTable.addObserver(this);
 		
 		this.addMouseListener(new MouseAdapter() {
 			
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				Airport clickedAirport = getAirportAt(e.getX(),e.getY());
-				if(clickedAirport == selected && clickedAirport.isVisible()) { 
-					
-					selected = null;
-					controller.resumeTimer();
-				}
-				else if(clickedAirport != null && clickedAirport.isVisible()) {
-					
-					selected = clickedAirport;
-					controller.pauseTimer();
-				}
-
-				
-			}
-		});
-		airportTable.addObserver(this);
+			public void mouseClicked(MouseEvent e) {processSelection(e.getX(),e.getY());}});
 	}
+	
 	@Override
-	public void onObserverSignal() {
+	public void onObserverSignal(EventType event) {
 		repaint();
 	}
 	@Override
 	public void paint(Graphics g) {
-		g.setColor(Color.GRAY);
-		g.fillRect(0,0,getWidth(), getHeight());
-		
-		// Draws a square at the specified pixel position
-		for(Airport at : airportTable.getAirports()) {
-			
-			// Skips if airport is not visible
-			if(!at.isVisible()) continue;
-			
-			int x = toPixelX(at.getX());
-			int y = toPixelY(at.getY());
-			
-			if(at == selected && blinkTimer.getBlinkState())
-				g.setColor(Color.RED);
-			else
-				g.setColor(Color.DARK_GRAY);
-			
-			g.fillRect(x, y, RECTANGLE_SIZE, RECTANGLE_SIZE);
-			g.drawString(at.getCode(), x + RECTANGLE_SIZE, y);
-		}
+		paintBackground(g,Color.GRAY);
+		paintVisibleAirports(g);
 	}
+	
 	
 	// Helper method for calculating X coordinate and converting the X coordinate starting point to the Canvas starting point
 	private int toPixelX(int airportXCoordinate) {
@@ -102,17 +72,66 @@ public class MapPanel extends Canvas implements Observer{
 		return null;
 	}
 	
-	// update method overriding to eliminate screen flickering when repaint is called
-	@Override
-	public void update(Graphics g) {
-	    Image buffer = createImage(getWidth(), getHeight());
-	    Graphics background = buffer.getGraphics();
-	    
-	    paint(background);
-	    
-	    g.drawImage(buffer, 0, 0, this);
-	    background.dispose();
+	// Helper method for checking if an airport is selected and visible
+	private void processSelection(int x, int y) {
+		
+		Airport clickedAirport = getAirportAt(x,y);
+		
+		if(clickedAirport == null) return;
+		if(clickedAirport == selectedCurr && clickedAirport.isVisible()) { 
+			
+			selectedCurr = null;
+			if(!Controller.getInstance().isSimulationActive()) {Controller.getInstance().resumeTimer();}
+		}
+		else if(clickedAirport != null && clickedAirport.isVisible()) {
+			
+			selectedCurr = clickedAirport;
+			Controller.getInstance().pauseTimer();
+		}
 	}
+	
+	// Helper method for setting a background color
+	private void paintBackground(Graphics g, Color color) {
+		g.setColor(color);
+		g.fillRect(0,0,getWidth(), getHeight());
+	}
+	
+	// Helper method for painting a square at the airport coordinate
+	private void paintVisibleAirports(Graphics g) {
+		
+		for(Airport at : airportTable.getAirports()) {
+			
+			// Removes selection if the selected airport was hidden
+			if(!at.isVisible() && at == selectedCurr) selectedCurr = null;
+			if(!at.isVisible()) continue;
+			
+			int x = toPixelX(at.getX());
+			int y = toPixelY(at.getY());
+			
+			if(at == selectedCurr && blinkTimer.getBlinkState()) {g.setColor(Color.RED);}
+			else {g.setColor(Color.DARK_GRAY);}
+			
+			g.fillRect(x, y, RECTANGLE_SIZE, RECTANGLE_SIZE);
+			g.drawString(at.getCode(), x + RECTANGLE_SIZE, y);
+		}
+	}
+	
+	// Update method overriding to eliminate screen flickering when repaint is called by implementing a buffer
+		@Override
+		public void update(Graphics g) {
+		    Image buffer = createImage(getWidth(), getHeight());
+		    Graphics background = buffer.getGraphics();
+		    
+		    paint(background);
+		    
+		    g.drawImage(buffer, 0, 0, this);
+		    background.dispose();
+		}
+		
+		public static boolean isSelected() {
+			if(selectedCurr != null) return true;
+			return false;
+		}
 	
 	
 	

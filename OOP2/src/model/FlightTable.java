@@ -1,7 +1,12 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+
+import logic.EventType;
+import logic.Observable;
+import logic.Observer;
 
 public class FlightTable implements Observable{
 	
@@ -16,7 +21,7 @@ public class FlightTable implements Observable{
 
 	@Override
 	public void notifyObservers() {
-		for(Observer o : observers) o.onObserverSignal();
+		for(Observer o : observers) o.onObserverSignal(EventType.TABLE);
 	}
 	
 	public void add(Flight flight) {
@@ -30,6 +35,11 @@ public class FlightTable implements Observable{
 	
 	public boolean isEmpty() {
 		return flights.isEmpty();
+	}
+	
+	public void sortFlights() {
+		flights.sort(Comparator.comparing(Flight::getDeparture));
+		notifyObservers();
 	}
 
 }

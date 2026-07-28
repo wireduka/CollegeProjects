@@ -2,11 +2,16 @@ package model;
 
 public class Flight {
 	
+	public enum FlightStatus{
+		WAITING,IN_FLIGHT,LANDED,QUEUED
+	}
+	
 	// Variables
 	private String from;
 	private String to;
 	private int departure;
 	private int duration;
+	private FlightStatus status = FlightStatus.WAITING;
 	
 	public Flight(String from, String to, int departure, int duration) {
 		
@@ -15,12 +20,18 @@ public class Flight {
 		this.departure = departure;
 		this.duration = duration;
 	}
-	// Getter methods
+	
+	// Default getter methods
 	public String getFrom() {return from;}
 	public String getTo() {return to;}
 	public int getDeparture() {return departure;}
 	public int getDuration() {return duration;}
 	
+	// Status getter and setter
+	public FlightStatus getStatus() { return status; }
+	public void setStatus(FlightStatus status) { this.status = status; }
+	
+	// Converts time to a readable format
 	public String getDepartureString() {
 		
 	    int hours = departure / 60;

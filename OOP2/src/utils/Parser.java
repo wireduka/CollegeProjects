@@ -31,15 +31,13 @@ public class Parser {
 		this.flightTable = flightTable;
 		this.owner = owner;
 	}
-
+	// Main parse command
 	public void parse(TokenizedData tokens) throws InvalidFileFormatException, NumberFormatException, InvalidDataException{
 		
-		if(!tokens.airportTokens.isEmpty())
-			parseAirports(tokens.airportTokens);
-		if(!tokens.flightTokens.isEmpty());
-			parseFlights(tokens.flightTokens);
+		if(!tokens.airportTokens.isEmpty()) parseAirports(tokens.airportTokens);
+		if(!tokens.flightTokens.isEmpty()) parseFlights(tokens.flightTokens);
 	}
-	
+	// Parses airports, if they exist
 	public void parseAirports(List<List<String>> airportTokens) throws InvalidFileFormatException, NumberFormatException, InvalidDataException {
 		
 		if(airportTokens.isEmpty()) throw new InvalidFileFormatException("No entries.");
@@ -52,7 +50,6 @@ public class Parser {
 			
 			String code = airportToken.get(0);
 			String name = airportToken.get(1);
-			
 			int x = Integer.parseInt(airportToken.get(2));
 			int y = Integer.parseInt(airportToken.get(3));
 			
@@ -69,6 +66,7 @@ public class Parser {
 		}
 		
 	}
+	// Parses flights, if they exist
 	public void parseFlights(List<List<String>> flightTokens) throws InvalidFileFormatException, NumberFormatException, InvalidDataException{
 		
 		if(flightTokens.isEmpty()) throw new InvalidFileFormatException("No entries.");
@@ -86,13 +84,24 @@ public class Parser {
 			int departureTime = parseTime(departure,duration);
 			generateFlight(from,to,departureTime,duration);
 		}
+		flightTable.sortFlights();
+		addMatchingFlights();
 	}
+	
+	// Generates a new flight
 	private void generateFlight(String from, String to, int departureTime, int duration) {
 		Flight flight = new Flight(from,to,departureTime,duration);
 		flightTable.add(flight);
 		
 	}
-
+	
+	// Generates a new airport
+		private void generateAirport(String code, String name, Coordinate coordinate) {
+			Airport airport = new Airport(code,name,coordinate);
+			airportTable.add(airport);
+		}
+		
+	// Helper method
 	private boolean parseCodeAndReturnDuplicate(String code) throws InvalidDataException{
 		
 		if(!isValidCode(code)) throw new InvalidDataException("Code length must be 3 characters and written only using upper case letters, code in file: " + code);
@@ -100,24 +109,22 @@ public class Parser {
 		else return false;
 	}
 	
+	// Helper method
 	private boolean parseCoordinateAndReturnDuplicate(int x, int y, Coordinate coordinate)  throws InvalidDataException{
 		
 		if((x > Airport.MAX_X || x < Airport.MIN_X) || (y > Airport.MAX_Y || y < Airport.MIN_Y))
 			throw new InvalidDataException("X must be in interval [-180,180], Y must be in interval [-90,90], X: " + x + " Y:" + y);
 		if(airportTable.exists(coordinate, AirportVar.COORDINATE)) {duplicateCoordinates.add(coordinate); return true;}
-			
+		
 		return false;
 	}
 	
+	// Helper method
 	private void parseAirportName(String name) throws InvalidDataException {
 		if(name.isEmpty()) throw new InvalidDataException("Name cannot be empty.");
 	}
 	
-	private void generateAirport(String code, String name, Coordinate coordinate) {
-		Airport airport = new Airport(code,name,coordinate);
-		airportTable.add(airport);
-	}
-	
+	// Helper method
 	private void parseFlightCodes(String from, String to) throws InvalidDataException {
 		
 		if(!isValidCode(from)) throw new InvalidDataException("Code length must be 3 characters and written only using upper case letters, code in file: " + from);
@@ -137,6 +144,7 @@ public class Parser {
 		
 	}
 	
+	// Helper method
 	private int parseTime(String departureTime, int flightDuration) throws InvalidDataException {
 		String[] temp = departureTime.split(":");
 		if(temp.length != 2) throw new InvalidDataException("Invalid flight time format, number of tokens must be 2");
@@ -152,8 +160,18 @@ public class Parser {
 		
 	}
 	
+	// Checks code validity
 	private boolean isValidCode(String code) {
 		return code.matches("[A-Z]{3}");
 	}
+	
+	private void addMatchingFlights() {
+		for(Flight f : flightTable.getFlights()) {
+			for(Airport a : airportTable.getAirports()) {
+				if(f.getFrom().equals(a.getCode())) {a.addFlight(f);}
+			}
+		}
+	}
+	
 	
 }

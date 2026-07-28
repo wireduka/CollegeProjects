@@ -9,9 +9,11 @@ import java.awt.Panel;
 import java.awt.ScrollPane;
 import java.awt.Scrollbar;
 
+import logic.Controller;
+import logic.EventType;
+import logic.Observer;
 import model.Airport;
 import model.AirportTable;
-import model.Observer;
 
 public class AirportTablePanel extends Panel implements Observer{
 	
@@ -19,9 +21,9 @@ public class AirportTablePanel extends Panel implements Observer{
 	private Panel listPanel = new Panel(new GridLayout(0,1));
 	private ScrollPane scroll = new ScrollPane();
 	
-	public AirportTablePanel(AirportTable airportTable) {
+	public AirportTablePanel() {
 		
-		this.airportTable = airportTable;
+		this.airportTable = Controller.getInstance().getAirportTable();
 		airportTable.addObserver(this);
 		this.setLayout(new BorderLayout());
 		
@@ -32,16 +34,16 @@ public class AirportTablePanel extends Panel implements Observer{
 	}
 
 	@Override
-	public void onObserverSignal() {
-		listPanel.removeAll();
-		for(Airport airport : airportTable.getAirports()) {
-			Checkbox cb = new Checkbox(airport.getCode() + " | " + airport.getName() + " | " + airport.getX() + "," + airport.getY(), true);
-			cb.addItemListener(e -> airport.setVisible(cb.getState()));
-			listPanel.add(cb);
-
+	public void onObserverSignal(EventType event) {
+		if(event == EventType.TABLE) {
+			listPanel.removeAll();
+			for(Airport airport : airportTable.getAirports()) {
+				Checkbox cb = new Checkbox(airport.getCode() + " | " + airport.getName() + " | " + airport.getX() + "," + airport.getY(), true);
+				cb.addItemListener(e -> {airport.setVisible(cb.getState()); Controller.getInstance().resetTimer();});
+				listPanel.add(cb);
+				
+			}
+			listPanel.revalidate();
 		}
-		 listPanel.revalidate();
-		
 	}
-
 }

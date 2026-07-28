@@ -1,4 +1,4 @@
-package model;
+package logic;
 
 public interface Observable {
 	

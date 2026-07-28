@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.io.File;
 
 import gui.DialogHelper;
+import gui.MapPanel;
 import model.AirportTable;
 import model.DataType;
 import model.FlightTable;
@@ -12,20 +13,37 @@ import utils.ImportExportManager.Mode;
 
 public class Controller {
 	
-	private AirportTable airportTable;
-	private FlightTable flightTable;
-	private DialogHelper dialogHelper;
+	private AirportTable airportTable = new AirportTable();
+	private FlightTable flightTable = new FlightTable();
+	private DialogHelper dialogHelper = new DialogHelper();
 	private ImportExportManager ioManager;
+	private boolean dataImported = false;
+	private boolean simulationActive = false;
 	private Frame owner;
 	private InactivityTimer inactivityTimer;
+	private Scheduler scheduler;
+	private Clock simulationClock = new Clock(1000);
+    private Clock animationClock = new Clock(200);
+	private static Controller instance = null;
 	
-	public Controller(Frame owner) {
+	
+	public static void initialize(Frame owner) {
+        if (instance == null) {
+            instance = new Controller(owner);
+        }
+    }
+	public static Controller getInstance() {
+		if (instance == null) {
+            throw new IllegalStateException("Controller not initialized");
+        }
+        return instance;
+	}
+	
+	private Controller(Frame owner) {
 		this.owner = owner;
-		this.dialogHelper = new DialogHelper();
-		this.airportTable = new AirportTable();
-		this.flightTable = new FlightTable();
 		this.ioManager = new ImportExportManager(owner,airportTable,flightTable);
 		this.inactivityTimer = new InactivityTimer(owner);
+		this.scheduler = new Scheduler(simulationClock,flightTable,airportTable);
 		inactivityTimer.start();
 	}
 	
@@ -38,6 +56,7 @@ public class Controller {
 		
 		ioManager.handle(file, type, mode);
 		inactivityTimer.resetTimer();
+		dataImported = true;
 	}
 	
 	public void requestImport(ImportExportManager.FileType type ) {
@@ -56,6 +75,7 @@ public class Controller {
 		
 		ioManager.handle(text, type);
 		inactivityTimer.resetTimer();
+		dataImported = true;
 	}
 	
 	public AirportTable getAirportTable() {
@@ -65,9 +85,48 @@ public class Controller {
 	public FlightTable getFlightTable() {
 		return flightTable;
 	}
+
 	
-	// Timer pausing
+	// Timer manipulation
 	public void pauseTimer() { inactivityTimer.pauseTimer(); }
 	public void resumeTimer() { inactivityTimer.resumeTimer(); }
+	public void resetTimer() {inactivityTimer.resetTimer();}
+	
+	public void startSimulation() {
+		if(!dataImported) return;
+		simulationActive = true;
+		
+		inactivityTimer.pauseTimer();
+		
+		if(!simulationClock.isAlive()) {
+			simulationClock.start();
+			animationClock.start();
+		}
+		else {
+			simulationClock.resumeClock(); 
+			animationClock.resumeClock();
+		}
+	}
+	public void pauseSimulation() {
+		simulationActive = false;
+		
+		simulationClock.pauseClock();
+		animationClock.pauseClock();
+		if(!MapPanel.isSelected()) {inactivityTimer.resumeTimer();} 
+	}
+	
+	public void resetSimulation() {
+		simulationActive = false;
+		
+		simulationClock.resetClock();
+		animationClock.resetClock();
+		scheduler.resetScheduling();
+		// TODO deleting all Flight GUI objects
+	}
+	
+	public Clock getSimulationClock() {return simulationClock;}
+	public String getSimulationTimeString() {return simulationClock.getClockString();}
+	public int getSimulationTime() {return simulationClock.getSimulationTime();}
+	public boolean isSimulationActive() {return simulationActive;}
 
 }

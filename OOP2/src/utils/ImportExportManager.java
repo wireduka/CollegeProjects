@@ -4,6 +4,9 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import com.google.gson.JsonParseException;
+
 import exception.InvalidDataException;
 import exception.InvalidFileFormatException;
 import gui.TextDialog;
@@ -52,10 +55,10 @@ public class ImportExportManager {
 	// Method for file handling
 	public void handle(File file, FileType type, Mode mode) {
 		
-		if(type == FileType.CSV && mode == Mode.IMPORT) {processImport(csvImporter,file);}
-		if(type == FileType.JSON && mode == Mode.IMPORT) {processImport(jsonImporter,file);}
-		if(type == FileType.CSV && mode == Mode.EXPORT) {processExport(csvExporter,file);}
-		if(type == FileType.JSON && mode == Mode.EXPORT) {processExport(jsonExporter,file);}
+		if(type == FileType.CSV 	&& mode == Mode.IMPORT)	 {processImport(csvImporter,file);}
+		if(type == FileType.JSON 	&& mode == Mode.IMPORT) {processImport(jsonImporter,file);}
+		if(type == FileType.CSV 	&& mode == Mode.EXPORT)	 {processExport(csvExporter,file);}
+		if(type == FileType.JSON 	&& mode == Mode.EXPORT) {processExport(jsonExporter,file);}
 		
 			
 	}
@@ -63,7 +66,7 @@ public class ImportExportManager {
 	public void handle(String text, DataType type) {
 		
 		TokenizedData tokens = manualImporter.read(text, type);
-		callParser(tokens);
+		callParser(tokens,type);
 		
 	}
 	// Calls importer and sends tokens to parser
@@ -71,17 +74,12 @@ public class ImportExportManager {
 		
 		try {
 			TokenizedData tokens = importer.readFile(file);
-			callParser(tokens);
-			}
-		catch(FileNotFoundException e) {
-			new TextDialog(owner,"Error","File not found"," The file may have been moved or deleted");
-			}
-		catch(IOException e) {
-			new TextDialog(owner,"Error","Unable to read file","The file might be open in another program or the program does not have privileges to read the file");
-		} 
-		catch (InvalidFileFormatException e) {
-			new TextDialog(owner,"Error",e.getMessage());
+			callParser(tokens,DataType.NONE);
 		}
+		catch(FileNotFoundException e) 			{ new TextDialog(owner,"Error","File not found"," The file may have been moved or deleted");	}
+		catch(IOException e)					{ new TextDialog(owner,"Error","Unable to read file","The file might be open in another program or the program does not have privileges to read the file");} 
+		catch (InvalidFileFormatException e) 	{ new TextDialog(owner,"Error",e.getMessage());}
+		catch (JsonParseException e) 			{ new TextDialog(owner,"Error","Invalid JSON format, check JSON file structure");}
 	}
 	
 	public void processExport(Exportable exporter, File file) {
@@ -89,24 +87,18 @@ public class ImportExportManager {
 		try {
 			exporter.write(file);
 		} 
-		catch (IOException e) {
-			new TextDialog(owner,"Error","Unable to write in file","The file might be open in another program or the program does not have privileges to read the file");
-		}
+		catch (IOException e) {	new TextDialog(owner,"Error","Unable to write in file","The file might be open in another program or the program does not have privileges to read the file");}
 	}
 	// Calls parser and updates tables
-	public void callParser(TokenizedData tokens) {
+	public void callParser(TokenizedData tokens, DataType dataType) {
 		
 		try {
-			parser.parse(tokens);
-			}
-		catch (InvalidFileFormatException e) {
-			new TextDialog(owner,"Error",e.getMessage());
+			if(dataType == DataType.NONE) {parser.parse(tokens);}
+			if(dataType == DataType.AIRPORT) {parser.parseAirports(tokens.airportTokens);}
+			if(dataType == DataType.FLIGHT) {parser.parseFlights(tokens.flightTokens);}
 		}
-		catch (NumberFormatException e) {
-			new TextDialog(owner,"Error","Invalid x/y coordinate, check if coordinates represent numbers");
-		}
-		catch (InvalidDataException e) {
-			new TextDialog(owner,"Error",e.getMessage());
-		}
+		catch (InvalidFileFormatException e)	{ new TextDialog(owner,"Error",e.getMessage());}
+		catch (NumberFormatException e) 		{ new TextDialog(owner,"Error","Invalid x/y coordinate, check if coordinates represent numbers");}
+		catch (InvalidDataException e) 			{ new TextDialog(owner,"Error",e.getMessage());}
 	}
 }

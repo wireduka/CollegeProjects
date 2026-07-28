@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import exception.InvalidFileFormatException;
 
@@ -17,15 +18,15 @@ public class JsonImporter implements Importable {
 	private static class JsonAirport {
 	    String code;
 	    String name;
-	    int x;
-	    int y;
+	    Integer x;										// Integer instead of int to differentiate null and 0 cases
+	    Integer y;
 	}
 
 	private static class JsonFlight {
 	    String from;
 	    String to;
 	    String departure;
-	    int duration;
+	    Integer duration;
 	}
 	
 	private static class JsonData {
@@ -34,7 +35,7 @@ public class JsonImporter implements Importable {
 	}
 
 	@Override
-	public TokenizedData readFile(File file) throws FileNotFoundException, IOException, InvalidFileFormatException {
+	public TokenizedData readFile(File file) throws FileNotFoundException, IOException, InvalidFileFormatException, JsonParseException {
 		
 		Gson gson = new Gson();
 		
@@ -47,6 +48,9 @@ public class JsonImporter implements Importable {
         if(data.airports != null) {
         	for (JsonAirport a : data.airports) {
         		List<String> tokens = new ArrayList<>();
+        		
+        		if(a.code == null || a.name == null || a.x == null || a.y == null)
+        		    throw new InvalidFileFormatException("Missing fields in airport entry.");
 
         		tokens.add(a.code);
         		tokens.add(a.name);
@@ -60,6 +64,9 @@ public class JsonImporter implements Importable {
         if(data.flights != null) {
         	for (JsonFlight f : data.flights) {
             	List<String> tokens = new ArrayList<>();
+            	
+            	if(f.from == null || f.to == null || f.departure == null || f.duration == null)
+        		    throw new InvalidFileFormatException("Missing fields in flight entry.");
             
             	tokens.add(f.from);
             	tokens.add(f.to);

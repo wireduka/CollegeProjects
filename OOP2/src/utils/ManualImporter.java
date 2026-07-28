@@ -25,7 +25,7 @@ public class ManualImporter {
 		
 		switch(type) {
 		case AIRPORT: 	data = new TokenizedData(listTokens,new ArrayList<>()); break;
-		case FLIGHT: 	data = new TokenizedData(null,new ArrayList<>()); break;
+		case FLIGHT: 	data = new TokenizedData(new ArrayList<>(),listTokens); break;
 		}
 		
 		return data;

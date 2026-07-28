@@ -1,8 +1,12 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+import logic.EventType;
+import logic.Observable;
+import logic.Observer;
 import model.Airport.AirportVar;
 
 public class AirportTable implements Observable{
@@ -18,7 +22,7 @@ public class AirportTable implements Observable{
 
 	@Override
 	public void notifyObservers() {
-		for(Observer o : observers) o.onObserverSignal();
+		for(Observer o : observers) o.onObserverSignal(EventType.TABLE);
 	}
 	
 	public void add(Airport airport) {
@@ -43,6 +47,11 @@ public class AirportTable implements Observable{
 	
 	public boolean isEmpty() {
 		return airports.isEmpty();
+	}
+	
+	public void sortAirports() {
+		airports.sort(Comparator.comparing(Airport::getCode));
+		notifyObservers();
 	}
 }
 
