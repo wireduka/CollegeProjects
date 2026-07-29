@@ -2,6 +2,7 @@ package logic;
 
 import java.awt.Canvas;
 
+// Blink timer that changes blinkState every 500 ms
 public class BlinkTimer extends Thread {
 	
 	private static final long BLINKING_TIME = 500;

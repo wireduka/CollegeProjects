@@ -6,7 +6,7 @@ import gui.CountdownDialog;
 
 public class InactivityTimer extends Thread{
 	
-	private static final int TIMEOUT = 55000;
+	private static final int TIMEOUT = 60000;
 	private volatile long lastAction = System.currentTimeMillis();
 	private volatile boolean countdownActive = false;
 	private volatile boolean paused = false;

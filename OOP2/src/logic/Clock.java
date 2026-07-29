@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Clock extends Thread implements Observable {
 	
+	// Constants
 	public static final int DEFAULT_CLOCK_SPEED = 1000;
 	public static final int MINUTES_PER_TICK = 10;
 	
@@ -13,6 +14,7 @@ public class Clock extends Thread implements Observable {
 	
 	private List<Observer> observers = new ArrayList<>();
 	
+	// Variable used for clock pausing
 	private volatile boolean paused = false;
 	
 	public Clock(int clockSpeed) {this.clockSpeed = clockSpeed;}
@@ -29,7 +31,7 @@ public class Clock extends Thread implements Observable {
 				}
 				
 				Thread.sleep(clockSpeed);
-				if(paused) continue;
+				if(paused) continue;								// Edge-case handling
 				time += MINUTES_PER_TICK;
 				notifyObservers();
 				
@@ -42,6 +44,7 @@ public class Clock extends Thread implements Observable {
 	
 	public void setClockSpeed(int clockSpeed) {this.clockSpeed = clockSpeed;}
 	
+	// Methods used for clock time manipulation
 	public synchronized void pauseClock() {paused = true;}
 	public synchronized void resumeClock() {paused = false; notifyAll();}
 	public synchronized void resetClock() {time = 0; paused = true; notifyObservers();}

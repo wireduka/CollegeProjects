@@ -10,6 +10,7 @@ public class Flight {
 	private String from;
 	private String to;
 	private int departure;
+	private int actualDeparture;
 	private int duration;
 	private FlightStatus status = FlightStatus.WAITING;
 	
@@ -19,6 +20,7 @@ public class Flight {
 	private Airport fromAirport = null;
 	private Airport toAirport = null;
 	
+	// Constructor
 	public Flight(Airport fromAirport, Airport toAirport, int departure, int duration) {
 		
 		this.fromAirport = fromAirport;
@@ -26,6 +28,7 @@ public class Flight {
 		this.from = fromAirport.getCode();
 		this.to = toAirport.getCode();
 		this.departure = departure;
+		this.actualDeparture = departure;
 		this.duration = duration;
 	}
 	
@@ -39,8 +42,13 @@ public class Flight {
 	public FlightStatus getStatus() { return status; }
 	public void setStatus(FlightStatus status) { this.status = status; }
 	
+	// Returns airport object
 	public Airport getFromAirport() {return fromAirport;}
 	public Airport getToAirport() {return toAirport;}
+	
+	// Used for precise flight duration calculation
+	public int getActualDeparture() { return actualDeparture; }
+	public void setActualDeparture(int actualDeparture) { this.actualDeparture = actualDeparture; }
 	
 	public synchronized Coordinate getCoordinate() {
 		

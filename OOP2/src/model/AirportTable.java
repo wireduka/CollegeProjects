@@ -25,10 +25,13 @@ public class AirportTable implements Observable{
 		for(Observer o : observers) o.onObserverSignal(EventType.TABLE);
 	}
 	
+	// Adds an airport to the table
 	public void add(Airport airport) {
 		airports.add(airport);
 		notifyObservers();
 	}
+	
+	// Used for checking if a specific airport variable exists
 	public <T> boolean exists(T s, AirportVar type) {
 		
 		for(Airport airport : airports) {
@@ -49,6 +52,7 @@ public class AirportTable implements Observable{
 		return airports.isEmpty();
 	}
 	
+	// Sorts the airportTable
 	public void sortAirports() {
 		airports.sort(Comparator.comparing(Airport::getCode));
 		notifyObservers();

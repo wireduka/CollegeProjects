@@ -26,12 +26,14 @@ public class Controller {
     private Clock animationClock = new Clock(200);
 	private static Controller instance = null;
 	
-		
+	// Method for singleton initialization
 	public static void initialize(Frame owner) {
         if (instance == null) {
             instance = new Controller(owner);
         }
     }
+	
+	// Grants the instance of the object to the caller
 	public static Controller getInstance() {
 		if (instance == null) {
             throw new IllegalStateException("Controller not initialized");
@@ -39,6 +41,7 @@ public class Controller {
         return instance;
 	}
 	
+	// Constructor
 	private Controller(Frame owner) {
 		this.owner = owner;
 		this.ioManager = new ImportExportManager(owner,airportTable,flightTable);
@@ -47,6 +50,7 @@ public class Controller {
 		inactivityTimer.start();
 	}
 	
+	// Sends a request to the IOManager
 	private void requestFileOperation(ImportExportManager.FileType type, ImportExportManager.Mode mode ) {
 		
 		inactivityTimer.resetTimer();
@@ -58,14 +62,17 @@ public class Controller {
 		inactivityTimer.resetTimer();
 		dataImported = true;
 	}
-	
+	// Sends an import request
 	public void requestImport(ImportExportManager.FileType type ) {
 		requestFileOperation(type,Mode.IMPORT);
 	}
+	
+	// Sends an export request
 	public void requestExport(ImportExportManager.FileType type ) {
 		requestFileOperation(type,Mode.EXPORT);
 	}
 	
+	// Separate method for manual requests
 	public void requestManual(DataType type ) {
 		
 		inactivityTimer.resetTimer();
@@ -92,6 +99,7 @@ public class Controller {
 	public void resumeTimer() { inactivityTimer.resumeTimer(); }
 	public void resetTimer() {inactivityTimer.resetTimer();}
 	
+	// Starts the simulation
 	public void startSimulation() {
 		if(!dataImported) return;
 		simulationActive = true;
@@ -107,6 +115,8 @@ public class Controller {
 			animationClock.resumeClock();
 		}
 	}
+	
+	// Pauses the simulation
 	public void pauseSimulation() {
 		simulationActive = false;
 		
@@ -115,6 +125,7 @@ public class Controller {
 		if(!MapPanel.isSelected()) {inactivityTimer.resumeTimer();} 
 	}
 	
+	// Resets the simulation
 	public void resetSimulation() {
 		simulationActive = false;
 		
@@ -124,11 +135,12 @@ public class Controller {
 		// TODO deleting all Flight GUI objects
 	}
 	
+	// Getter methods
 	public Clock getSimulationClock() {return simulationClock;}
 	public String getSimulationTimeString() {return simulationClock.getClockString();}
 	public int getSimulationTime() {return simulationClock.getSimulationTime();}
-	public boolean isSimulationActive() {return simulationActive;}
-	
 	public Clock getAnimationClock() {return animationClock;}
+	
+	public boolean isSimulationActive() {return simulationActive;}
 
 }

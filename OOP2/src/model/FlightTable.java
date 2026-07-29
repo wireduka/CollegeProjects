@@ -24,6 +24,7 @@ public class FlightTable implements Observable{
 		for(Observer o : observers) o.onObserverSignal(EventType.TABLE);
 	}
 	
+	// Adds flight to the table
 	public void add(Flight flight) {
 		flights.add(flight);
 		notifyObservers();
@@ -37,6 +38,7 @@ public class FlightTable implements Observable{
 		return flights.isEmpty();
 	}
 	
+	// Sorts the table
 	public void sortFlights() {
 		flights.sort(Comparator.comparing(Flight::getDeparture));
 		notifyObservers();

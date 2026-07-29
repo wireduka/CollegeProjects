@@ -146,7 +146,7 @@ public class MapPanel extends Canvas implements Observer{
 			origin = new Coordinate(f.getFromAirport().getX(),f.getFromAirport().getY());
 			destination = new Coordinate(f.getToAirport().getX(),f.getToAirport().getY());
 			
-			double progress = (double)(controller.getSimulationTime() - f.getDeparture()) / f.getDuration();
+			double progress = (double)(controller.getSimulationTime() - f.getActualDeparture()) / f.getDuration();
 			int currentX = (int)(origin.getX() + progress * (destination.getX() - origin.getX()));
 			int currentY = (int)(origin.getY() + progress * (destination.getY() - origin.getY()));
 			
