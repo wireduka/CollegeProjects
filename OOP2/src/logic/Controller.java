@@ -5,6 +5,7 @@ import java.io.File;
 
 import gui.DialogHelper;
 import gui.MapPanel;
+import gui.TextDialog;
 import model.AirportTable;
 import model.DataType;
 import model.FlightTable;
@@ -17,7 +18,7 @@ public class Controller {
 	private FlightTable flightTable = new FlightTable();
 	private DialogHelper dialogHelper = new DialogHelper();
 	private ImportExportManager ioManager;
-	private boolean dataImported = false;
+	private boolean simulationReady = false;
 	private boolean simulationActive = false;
 	private Frame owner;
 	private InactivityTimer inactivityTimer;
@@ -60,7 +61,7 @@ public class Controller {
 		
 		ioManager.handle(file, type, mode);
 		inactivityTimer.resetTimer();
-		dataImported = true;
+		simulationReady = true;
 	}
 	// Sends an import request
 	public void requestImport(ImportExportManager.FileType type ) {
@@ -82,7 +83,7 @@ public class Controller {
 		
 		ioManager.handle(text, type);
 		inactivityTimer.resetTimer();
-		dataImported = true;
+		if(type == DataType.FLIGHT) simulationReady = true;
 	}
 	
 	public AirportTable getAirportTable() {
@@ -101,7 +102,7 @@ public class Controller {
 	
 	// Starts the simulation
 	public void startSimulation() {
-		if(!dataImported) return;
+		if(!simulationReady) {new TextDialog(owner,"Warning"," Flights have not been imported, please insert an entry."); return;}
 		simulationActive = true;
 		
 		inactivityTimer.pauseTimer();
@@ -118,6 +119,7 @@ public class Controller {
 	
 	// Pauses the simulation
 	public void pauseSimulation() {
+		if(!simulationReady) {new TextDialog(owner,"Warning"," Flights have not been imported, please insert an entry."); return;}
 		simulationActive = false;
 		
 		simulationClock.pauseClock();
@@ -127,6 +129,7 @@ public class Controller {
 	
 	// Resets the simulation
 	public void resetSimulation() {
+		if(!simulationReady) {new TextDialog(owner,"Warning"," Flights have not been imported, please insert an entry."); return;}
 		simulationActive = false;
 		
 		simulationClock.resetClock();
@@ -142,5 +145,7 @@ public class Controller {
 	public Clock getAnimationClock() {return animationClock;}
 	
 	public boolean isSimulationActive() {return simulationActive;}
+	
+	
 
 }

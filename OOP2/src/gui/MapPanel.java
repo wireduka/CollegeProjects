@@ -16,11 +16,10 @@ import model.AirportTable;
 import model.Coordinate;
 import model.Flight;
 import model.Flight.FlightStatus;
+import model.Movement;
 
 public class MapPanel extends Canvas implements Observer{
 	
-	private Coordinate origin;
-	private Coordinate destination;
 	private AirportTable airportTable;
 	private static Airport selectedCurr;
 	private BlinkTimer blinkTimer;
@@ -84,12 +83,27 @@ public class MapPanel extends Canvas implements Observer{
 		return null;
 	}
 	
+	// Helper method for detecting if a flight was selected
+	private Flight getFlightAt(int x, int y) {
+		
+		for(Flight ft: controller.getFlightTable().getFlights()) {
+			
+			int flightXPixelCoordinate = toPixelX(ft.getCurrentCoordinate().getX());
+			int flightYPixelCoordinate = toPixelY(ft.getCurrentCoordinate().getY());
+			
+			if(x >= flightXPixelCoordinate && x <= flightXPixelCoordinate + FLIGHT_SIZE &&
+			   y >= flightXPixelCoordinate && y <=  flightYPixelCoordinate + FLIGHT_SIZE)
+			{return ft;}
+		}
+		return null;
+	}
+	
 	// Helper method for checking if an airport is selected and visible
-	private void processSelection(int x, int y) {
+	private boolean processSelection(int x, int y) {
 		
 		Airport clickedAirport = getAirportAt(x,y);
 		
-		if(clickedAirport == null) return;
+		if(clickedAirport == null) return false;
 		if(clickedAirport == selectedCurr && clickedAirport.isVisible()) { 
 			
 			selectedCurr = null;
@@ -100,6 +114,7 @@ public class MapPanel extends Canvas implements Observer{
 			selectedCurr = clickedAirport;
 			controller.pauseTimer();
 		}
+		return true;
 	}
 	
 	// Helper method for setting a background color
@@ -132,7 +147,7 @@ public class MapPanel extends Canvas implements Observer{
 		for(Flight f : controller.getFlightTable().getFlights()) {
 			if(f.getStatus() == FlightStatus.IN_FLIGHT) {
 				g.setColor(Color.BLUE);
-				g.fillOval(toPixelX(f.getCoordinate().getX()) + MARGIN,toPixelY(f.getCoordinate().getY()) + MARGIN, FLIGHT_SIZE, FLIGHT_SIZE);
+				g.fillOval(toPixelX(f.getCurrentCoordinate().getX()) + MARGIN,toPixelY(f.getCurrentCoordinate().getY()) + MARGIN, FLIGHT_SIZE, FLIGHT_SIZE);
 			}
 		}
 		
@@ -141,19 +156,28 @@ public class MapPanel extends Canvas implements Observer{
 		
 		for(Flight f : controller.getFlightTable().getFlights()) {
 			
+			int time = controller.getSimulationTime();
+			
 			if (f.getStatus() != FlightStatus.IN_FLIGHT) continue;
 			
-			origin = new Coordinate(f.getFromAirport().getX(),f.getFromAirport().getY());
-			destination = new Coordinate(f.getToAirport().getX(),f.getToAirport().getY());
+			Movement m = f.getCurrentMovement();
 			
-			double progress = (double)(controller.getSimulationTime() - f.getActualDeparture()) / f.getDuration();
-			int currentX = (int)(origin.getX() + progress * (destination.getX() - origin.getX()));
-			int currentY = (int)(origin.getY() + progress * (destination.getY() - origin.getY()));
+			double progress = (double)(time - m.getStartTime()) / m.getDuration();
+			progress = Math.min(progress, 1.0);
 			
-			f.setCoordinate(currentX, currentY);
+			Coordinate start = m.getStart();
+			Coordinate end = m.getEnd();
+			int currentX = (int)(start.getX() + progress * (end.getX() - start.getX()));
+			int currentY = (int)(start.getY() + progress * (end.getY() - start.getY()));
 			
-
+			f.setCurrentCoordinate(currentX, currentY);
+			
+			processFlightEvents(f);
 		}
+	}
+	
+	// Method added for further software implementation
+	private void processFlightEvents(Flight f) {
 		
 	}
 	// Update method overriding to eliminate screen flickering when repaint is called by implementing a buffer

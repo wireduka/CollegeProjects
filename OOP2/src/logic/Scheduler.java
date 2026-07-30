@@ -44,8 +44,7 @@ public class Scheduler implements Observer {
 			// Dispatch one flight per airport per tick
 			if(!at.getDepartureQueue().isEmpty()) {
 				Flight inFlight = at.getDepartureQueue().remove(0);
-				inFlight.setActualDeparture(Controller.getInstance().getSimulationTime());
-				inFlight.setStatus(Flight.FlightStatus.IN_FLIGHT);
+				inFlight.depart(Controller.getInstance().getSimulationTime());
 				System.out.println("Flight:" + inFlight.getFrom() + "->" + inFlight.getTo() + " in flight." + " Time: " + Controller.getInstance().getSimulationTime()); 	// DEBUG
 				activeFlights.add(inFlight);
 			}

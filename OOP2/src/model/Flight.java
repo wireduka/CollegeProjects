@@ -1,5 +1,7 @@
 package model;
 
+import logic.Controller;
+
 public class Flight {
 	
 	public enum FlightStatus{
@@ -12,6 +14,7 @@ public class Flight {
 	private int departure;
 	private int actualDeparture;
 	private int duration;
+	private Movement currentMovement;
 	private FlightStatus status = FlightStatus.WAITING;
 	
 	private Coordinate defaultCoordinate = null;
@@ -30,6 +33,11 @@ public class Flight {
 		this.departure = departure;
 		this.actualDeparture = departure;
 		this.duration = duration;
+		
+		Coordinate tempStart = new Coordinate(fromAirport.getX(),fromAirport.getY());
+		Coordinate tempEnd = new Coordinate(toAirport.getX(),toAirport.getY());
+		
+		currentMovement = new Movement(tempStart,tempEnd,departure,duration);
 	}
 	
 	// Default getter methods
@@ -50,14 +58,14 @@ public class Flight {
 	public int getActualDeparture() { return actualDeparture; }
 	public void setActualDeparture(int actualDeparture) { this.actualDeparture = actualDeparture; }
 	
-	public synchronized Coordinate getCoordinate() {
+	public synchronized Coordinate getCurrentCoordinate() {
 		
 		if(currCoordinate == null) {return defaultCoordinate;}
 		else {return currCoordinate;}
 		
 	}
 	
-	public synchronized void setCoordinate(int x, int y) {
+	public synchronized void setCurrentCoordinate(int x, int y) {
 		
 		if(defaultCoordinate == null) {defaultCoordinate = new Coordinate(x,y);}
 		else {currCoordinate = new Coordinate(x,y);}
@@ -70,6 +78,16 @@ public class Flight {
 	    int minutes = departure % 60;
 
 	    return String.format("%02d:%02d", hours, minutes);
+	}
+	
+	public Movement getCurrentMovement() {
+		return currentMovement;
+	}
+	
+	public void depart(int time) {
+		setActualDeparture(time);
+		getCurrentMovement().setStartTime(time);
+		setStatus(FlightStatus.IN_FLIGHT);
 	}
 	
 }

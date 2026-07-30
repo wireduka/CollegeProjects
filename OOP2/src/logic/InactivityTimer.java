@@ -22,6 +22,7 @@ public class InactivityTimer extends Thread{
 			try {
 				Thread.sleep(500);
 				
+				// Checks if 60 seconds has passed to start the countdown
 				long elapsedTime = System.currentTimeMillis();
 				elapsedTime = elapsedTime - lastAction;
 				if(elapsedTime >= TIMEOUT && !countdownActive && !paused) {
@@ -29,6 +30,7 @@ public class InactivityTimer extends Thread{
 					countdownActive = true;
 					CountdownDialog cd = new CountdownDialog(owner);
 					
+					// 5 second countdown
 					for(int i = 5; i > 0; i --) {
 						
 						if(!cd.isVisible()) break;
@@ -38,11 +40,11 @@ public class InactivityTimer extends Thread{
 						Thread.sleep(1000);
 						
 					}
-					if(!cd.isVisible() || cd.isConfirmed()) {
+					if(!cd.isVisible() || cd.isConfirmed()) {					// If the user presses the OK button the countdown resets
 						resetTimer();
 					}
 					else
-						System.exit(0);
+						System.exit(0);											// Exits the program if the countdown was successful
 					countdownActive = false;
 
 				}

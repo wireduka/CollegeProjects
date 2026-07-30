@@ -59,7 +59,6 @@ public class Clock extends Thread implements Observable {
 		for(Observer o : observers) {o.onObserverSignal(EventType.CLOCK);}
 		
 	}
-	
 	public String getClockString() {
 		
 		int days = time / 1440;

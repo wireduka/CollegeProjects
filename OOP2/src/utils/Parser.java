@@ -183,7 +183,7 @@ public class Parser {
 			for(Airport a : airportTable.getAirports()) {
 				if(f.getFrom().equals(a.getCode())) {
 					a.addFlight(f);
-					f.setCoordinate(a.getX(), a.getY());
+					f.setCurrentCoordinate(a.getX(), a.getY());
 				}
 			}
 		}
