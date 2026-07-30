@@ -64,8 +64,9 @@ public class Scheduler implements Observer {
 	
 	// Sets the scheduler to the default state
 	public void resetScheduling() {
-		for(Flight f : flightTable.getFlights()) { f.setStatus(FlightStatus.WAITING);}
+		for(Flight f : flightTable.getFlights()) { f.setStatus(FlightStatus.WAITING); f.resetMovement();}
 		for(Airport a : airportTable.getAirports()) {a.getDepartureQueue().clear();}
+		
 	}
-
+	
 }

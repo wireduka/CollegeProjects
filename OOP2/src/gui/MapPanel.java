@@ -32,6 +32,7 @@ public class MapPanel extends Canvas implements Observer{
 	// Constructor
 	public MapPanel() {
 		
+		controller.addMapPanel(this);
 		this.airportTable = controller.getAirportTable();;
 		this.blinkTimer = new BlinkTimer(this);
 		
@@ -145,7 +146,7 @@ public class MapPanel extends Canvas implements Observer{
 	
 	private void paintFlights(Graphics g) {
 		for(Flight f : controller.getFlightTable().getFlights()) {
-			if(f.getStatus() == FlightStatus.IN_FLIGHT) {
+			if(f.getStatus() == FlightStatus.IN_FLIGHT) {					// In the case of further status implementation, the status case must be defined here
 				g.setColor(Color.BLUE);
 				g.fillOval(toPixelX(f.getCurrentCoordinate().getX()) + MARGIN,toPixelY(f.getCurrentCoordinate().getY()) + MARGIN, FLIGHT_SIZE, FLIGHT_SIZE);
 			}
@@ -158,7 +159,7 @@ public class MapPanel extends Canvas implements Observer{
 			
 			int time = controller.getSimulationTime();
 			
-			if (f.getStatus() != FlightStatus.IN_FLIGHT) continue;
+			if (f.getStatus() != FlightStatus.IN_FLIGHT) continue;			// In the case of further status implementation, the status case must be defined here
 			
 			Movement m = f.getCurrentMovement();
 			

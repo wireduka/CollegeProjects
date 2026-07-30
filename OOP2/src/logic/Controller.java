@@ -23,6 +23,7 @@ public class Controller {
 	private Frame owner;
 	private InactivityTimer inactivityTimer;
 	private Scheduler scheduler;
+	private MapPanel mapPanel;
 	private Clock simulationClock = new Clock(1000);
     private Clock animationClock = new Clock(200);
 	private static Controller instance = null;
@@ -93,6 +94,10 @@ public class Controller {
 	public FlightTable getFlightTable() {
 		return flightTable;
 	}
+	
+	public void addMapPanel(MapPanel mapPanel) {
+		this.mapPanel = mapPanel;
+	}
 
 	
 	// Timer manipulation
@@ -119,7 +124,6 @@ public class Controller {
 	
 	// Pauses the simulation
 	public void pauseSimulation() {
-		if(!simulationReady) {new TextDialog(owner,"Warning"," Flights have not been imported, please insert an entry."); return;}
 		simulationActive = false;
 		
 		simulationClock.pauseClock();
@@ -129,7 +133,6 @@ public class Controller {
 	
 	// Resets the simulation
 	public void resetSimulation() {
-		if(!simulationReady) {new TextDialog(owner,"Warning"," Flights have not been imported, please insert an entry."); return;}
 		simulationActive = false;
 		
 		simulationClock.resetClock();

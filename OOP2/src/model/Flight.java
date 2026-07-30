@@ -84,6 +84,17 @@ public class Flight {
 		return currentMovement;
 	}
 	
+	public void setCurrentMovement(Movement m) {
+		this.currentMovement = m;
+	}
+	
+	public void resetMovement() {
+		currentMovement.setStart(new Coordinate(fromAirport.getX(), fromAirport.getY()));
+	    currentMovement.setEnd(new Coordinate(toAirport.getX(), toAirport.getY()));
+	    currentMovement.setStartTime(departure);
+	    currentMovement.setDuration(duration);
+	}
+	
 	public void depart(int time) {
 		setActualDeparture(time);
 		getCurrentMovement().setStartTime(time);
