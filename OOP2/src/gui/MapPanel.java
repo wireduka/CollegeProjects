@@ -26,8 +26,7 @@ public class MapPanel extends Canvas implements Observer{
 	private Controller controller = Controller.getInstance();
 	
 	private static final int RECTANGLE_SIZE = 20;
-	private static final int FLIGHT_SIZE = 10;
-	private static final int MARGIN = 4;
+	private static final int FLIGHT_SIZE = 12;
 	
 	// Constructor
 	public MapPanel() {
@@ -77,8 +76,8 @@ public class MapPanel extends Canvas implements Observer{
 			int airportXPixelCoordinate = toPixelX(at.getX());
 			int airportYPixelCoordinate = toPixelY(at.getY());
 			
-			if(x >= airportXPixelCoordinate && x <= airportXPixelCoordinate + RECTANGLE_SIZE &&
-			   y >= airportYPixelCoordinate && y <=  airportYPixelCoordinate + RECTANGLE_SIZE)
+			if(x >= airportXPixelCoordinate - RECTANGLE_SIZE/2 && x <= airportXPixelCoordinate + RECTANGLE_SIZE/2 &&
+			   y >= airportYPixelCoordinate - RECTANGLE_SIZE/2 && y <=  airportYPixelCoordinate + RECTANGLE_SIZE/2)
 			{return at;}
 		}
 		return null;
@@ -92,8 +91,8 @@ public class MapPanel extends Canvas implements Observer{
 			int flightXPixelCoordinate = toPixelX(ft.getCurrentCoordinate().getX());
 			int flightYPixelCoordinate = toPixelY(ft.getCurrentCoordinate().getY());
 			
-			if(x >= flightXPixelCoordinate && x <= flightXPixelCoordinate + FLIGHT_SIZE &&
-			   y >= flightXPixelCoordinate && y <=  flightYPixelCoordinate + FLIGHT_SIZE)
+			if(x >= flightXPixelCoordinate - FLIGHT_SIZE/2 && x <= flightXPixelCoordinate + FLIGHT_SIZE/2 &&
+			   y >= flightYPixelCoordinate - FLIGHT_SIZE/2 && y <= flightYPixelCoordinate + FLIGHT_SIZE/2)
 			{return ft;}
 		}
 		return null;
@@ -139,7 +138,7 @@ public class MapPanel extends Canvas implements Observer{
 			if(at == selectedCurr && blinkTimer.getBlinkState()) {g.setColor(Color.RED);}
 			else {g.setColor(Color.DARK_GRAY);}
 			
-			g.fillRect(x, y, RECTANGLE_SIZE, RECTANGLE_SIZE);
+			g.fillRect(x - RECTANGLE_SIZE/2, y - RECTANGLE_SIZE/2, RECTANGLE_SIZE, RECTANGLE_SIZE);
 			g.drawString(at.getCode(), x + RECTANGLE_SIZE, y);
 		}
 	}
@@ -148,7 +147,7 @@ public class MapPanel extends Canvas implements Observer{
 		for(Flight f : controller.getFlightTable().getFlights()) {
 			if(f.getStatus() == FlightStatus.IN_FLIGHT) {					// In the case of further status implementation, the status case must be defined here
 				g.setColor(Color.BLUE);
-				g.fillOval(toPixelX(f.getCurrentCoordinate().getX()) + MARGIN,toPixelY(f.getCurrentCoordinate().getY()) + MARGIN, FLIGHT_SIZE, FLIGHT_SIZE);
+				g.fillOval(toPixelX(f.getCurrentCoordinate().getX()) - FLIGHT_SIZE/2,toPixelY(f.getCurrentCoordinate().getY()) - FLIGHT_SIZE/2, FLIGHT_SIZE, FLIGHT_SIZE);
 			}
 		}
 		
@@ -182,21 +181,21 @@ public class MapPanel extends Canvas implements Observer{
 		
 	}
 	// Update method overriding to eliminate screen flickering when repaint is called by implementing a buffer
-		@Override
-		public void update(Graphics g) {
-		    Image buffer = createImage(getWidth(), getHeight());
-		    Graphics background = buffer.getGraphics();
+	@Override
+	public void update(Graphics g) {
+		Image buffer = createImage(getWidth(), getHeight());
+		Graphics background = buffer.getGraphics();
 		    
-		    paint(background);
+		paint(background);
 		    
-		    g.drawImage(buffer, 0, 0, this);
-		    background.dispose();
+		g.drawImage(buffer, 0, 0, this);
+		background.dispose();
 		}
 		
-		public static boolean isSelected() {
-			if(selectedCurr != null) return true;
-			return false;
-		}
+	public static boolean isSelected() {
+		if(selectedCurr != null) return true;
+		return false;
+	}
 	
 	
 	
