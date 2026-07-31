@@ -59,13 +59,30 @@ public class MapPanel extends Canvas implements Observer{
 	}
 	
 	// Helper method for calculating X coordinate and converting the X coordinate starting point to the Canvas starting point
-	private int toPixelX(int airportXCoordinate) {
-		return (int)((airportXCoordinate - Airport.MIN_X) / (double)(Airport.MAX_X - Airport.MIN_X) * this.getWidth());
+	private int toPixelX(int x) {
+		return getWidth()/2 + (int)(x * getScale());
 	}
 	
 	// Helper method for calculating Y coordinate and converting the Y coordinate starting point to the Canvas starting point
-	private int toPixelY(int airportYCoordinate) {
-		return (int)(this.getHeight() - (airportYCoordinate - Airport.MIN_Y) / (double)(Airport.MAX_Y - Airport.MIN_Y) * this.getHeight());
+	private int toPixelY(int y) {
+		return getHeight()/2 - (int)(y * getScale());
+	}
+	
+	// Helper method for calculating Canvas X coordinate and converting the X coordinate to the model coordinate
+	private int fromPixelX(int px) {
+	    return (int)((px - getWidth()/2) / (getScale()));
+	}
+	// Helper method for calculating Canvas Y coordinate and converting the Y coordinate to the model coordinate
+	private int fromPixelY(int py) {
+	    return (int)((getHeight()/2 - py) / (getScale()));
+	}
+	
+	// Helper method for setting the map scaling
+	private double getScale() {
+	    return Math.min(
+	        getWidth() / (double)(Airport.MAX_X - Airport.MIN_X),
+	        getHeight() / (double)(Airport.MAX_Y - Airport.MIN_Y)
+	    );
 	}
 	
 	// Helper method for detecting if an airport was selected
@@ -87,6 +104,7 @@ public class MapPanel extends Canvas implements Observer{
 	private Flight getFlightAt(int x, int y) {
 		
 		for(Flight ft: controller.getFlightTable().getFlights()) {
+			if(ft.getStatus() != FlightStatus.IN_FLIGHT) continue;			// In the case of further status implementation, the status case must be defined here
 			
 			int flightXPixelCoordinate = toPixelX(ft.getCurrentCoordinate().getX());
 			int flightYPixelCoordinate = toPixelY(ft.getCurrentCoordinate().getY());

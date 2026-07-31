@@ -10,6 +10,7 @@ public class Clock extends Thread implements Observable {
 	public static final int MINUTES_PER_TICK = 10;
 	
 	private int clockSpeed = DEFAULT_CLOCK_SPEED;
+	private int minutesPerTick = MINUTES_PER_TICK;
 	private int time = 0;
 	
 	private List<Observer> observers = new ArrayList<>();
@@ -17,8 +18,11 @@ public class Clock extends Thread implements Observable {
 	// Variable used for clock pausing
 	private volatile boolean paused = false;
 	
-	public Clock(int clockSpeed) {this.clockSpeed = clockSpeed;}
-	public Clock() {this(DEFAULT_CLOCK_SPEED);}
+	public Clock(int clockSpeed, int minutesPerTick) {
+		this.clockSpeed = clockSpeed;
+		this.minutesPerTick = minutesPerTick;
+		}
+	public Clock() {this(DEFAULT_CLOCK_SPEED,MINUTES_PER_TICK);}
 	
 	@Override
 	public void run() {
@@ -32,7 +36,7 @@ public class Clock extends Thread implements Observable {
 				
 				Thread.sleep(clockSpeed);
 				if(paused) continue;								// Edge-case handling
-				time += MINUTES_PER_TICK;
+				time += minutesPerTick;
 				notifyObservers();
 				
 			}

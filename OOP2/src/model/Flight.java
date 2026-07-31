@@ -96,9 +96,9 @@ public class Flight {
 	}
 	
 	public void depart(int time) {
-		setActualDeparture(time);
-		getCurrentMovement().setStartTime(time);
-		setStatus(FlightStatus.IN_FLIGHT);
+		actualDeparture = time;
+		currentMovement.setStartTime(time);
+		status = FlightStatus.IN_FLIGHT;
 	}
 	
 }

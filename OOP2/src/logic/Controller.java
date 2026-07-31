@@ -24,8 +24,8 @@ public class Controller {
 	private InactivityTimer inactivityTimer;
 	private Scheduler scheduler;
 	private MapPanel mapPanel;
-	private Clock simulationClock = new Clock(1000);
-    private Clock animationClock = new Clock(200);
+	private Clock simulationClock = new Clock(1000,10);
+    private Clock animationClock = new Clock(200,2);
 	private static Controller instance = null;
 	
 	// Method for singleton initialization
@@ -143,9 +143,13 @@ public class Controller {
 	
 	// Getter methods
 	public Clock getSimulationClock() {return simulationClock;}
+	public Clock getAnimationClock() {return animationClock;}
+	
 	public String getSimulationTimeString() {return simulationClock.getClockString();}
 	public int getSimulationTime() {return simulationClock.getSimulationTime();}
-	public Clock getAnimationClock() {return animationClock;}
+	
+
+	
 	
 	public boolean isSimulationActive() {return simulationActive;}
 	
