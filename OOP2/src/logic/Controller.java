@@ -147,7 +147,7 @@ public class Controller {
 	
 	public String getSimulationTimeString() {return simulationClock.getClockString();}
 	public int getSimulationTime() {return simulationClock.getSimulationTime();}
-	
+	public int getAnimationTime() {return animationClock.getSimulationTime();}
 
 	
 	

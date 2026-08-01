@@ -16,7 +16,6 @@ import model.AirportTable;
 import model.Coordinate;
 import model.Flight;
 import model.Flight.FlightStatus;
-import model.Movement;
 
 public class MapPanel extends Canvas implements Observer{
 	
@@ -46,7 +45,6 @@ public class MapPanel extends Canvas implements Observer{
 	
 	@Override
 	public void onObserverSignal(EventType event) {
-		updateCoordinates();
 		repaint();
 	}
 	@Override
@@ -59,13 +57,13 @@ public class MapPanel extends Canvas implements Observer{
 	}
 	
 	// Helper method for calculating X coordinate and converting the X coordinate starting point to the Canvas starting point
-	private int toPixelX(int x) {
-		return getWidth()/2 + (int)(x * getScale());
+	private int toPixelX(double x) {
+	    return getWidth()/2 + (int)Math.round(x * getScale());
 	}
 	
 	// Helper method for calculating Y coordinate and converting the Y coordinate starting point to the Canvas starting point
-	private int toPixelY(int y) {
-		return getHeight()/2 - (int)(y * getScale());
+	private int toPixelY(double y) {
+	    return getHeight()/2 - (int)Math.round(y * getScale());
 	}
 	
 	// Helper method for calculating Canvas X coordinate and converting the X coordinate to the model coordinate
@@ -103,11 +101,14 @@ public class MapPanel extends Canvas implements Observer{
 	// Helper method for detecting if a flight was selected
 	private Flight getFlightAt(int x, int y) {
 		
+		int animationTime = controller.getAnimationTime();
+		
 		for(Flight ft: controller.getFlightTable().getFlights()) {
 			if(ft.getStatus() != FlightStatus.IN_FLIGHT) continue;			// In the case of further status implementation, the status case must be defined here
 			
-			int flightXPixelCoordinate = toPixelX(ft.getCurrentCoordinate().getX());
-			int flightYPixelCoordinate = toPixelY(ft.getCurrentCoordinate().getY());
+			Coordinate position = ft.getPositionAt(animationTime);
+			int flightXPixelCoordinate = toPixelX(position.getXPrecise());
+			int flightYPixelCoordinate = toPixelY(position.getYPrecise());
 			
 			if(x >= flightXPixelCoordinate - FLIGHT_SIZE/2 && x <= flightXPixelCoordinate + FLIGHT_SIZE/2 &&
 			   y >= flightYPixelCoordinate - FLIGHT_SIZE/2 && y <= flightYPixelCoordinate + FLIGHT_SIZE/2)
@@ -162,42 +163,19 @@ public class MapPanel extends Canvas implements Observer{
 	}
 	
 	private void paintFlights(Graphics g) {
+		int animationTime = controller.getAnimationTime();
 		for(Flight f : controller.getFlightTable().getFlights()) {
 			if(f.getStatus() == FlightStatus.IN_FLIGHT) {					// In the case of further status implementation, the status case must be defined here
+				Coordinate position = f.getPositionAt(animationTime);
 				g.setColor(Color.BLUE);
-				g.fillOval(toPixelX(f.getCurrentCoordinate().getX()) - FLIGHT_SIZE/2,toPixelY(f.getCurrentCoordinate().getY()) - FLIGHT_SIZE/2, FLIGHT_SIZE, FLIGHT_SIZE);
+				g.fillOval(toPixelX(position.getXPrecise()) - FLIGHT_SIZE/2,
+						   toPixelY(position.getYPrecise()) - FLIGHT_SIZE/2,
+						   FLIGHT_SIZE, FLIGHT_SIZE);
 			}
 		}
 		
 	}
-	private void updateCoordinates() {
-		
-		for(Flight f : controller.getFlightTable().getFlights()) {
-			
-			int time = controller.getSimulationTime();
-			
-			if (f.getStatus() != FlightStatus.IN_FLIGHT) continue;			// In the case of further status implementation, the status case must be defined here
-			
-			Movement m = f.getCurrentMovement();
-			
-			double progress = (double)(time - m.getStartTime()) / m.getDuration();
-			progress = Math.min(progress, 1.0);
-			
-			Coordinate start = m.getStart();
-			Coordinate end = m.getEnd();
-			int currentX = (int)(start.getX() + progress * (end.getX() - start.getX()));
-			int currentY = (int)(start.getY() + progress * (end.getY() - start.getY()));
-			
-			f.setCurrentCoordinate(currentX, currentY);
-			
-			processFlightEvents(f);
-		}
-	}
 	
-	// Method added for further software implementation
-	private void processFlightEvents(Flight f) {
-		
-	}
 	// Update method overriding to eliminate screen flickering when repaint is called by implementing a buffer
 	@Override
 	public void update(Graphics g) {

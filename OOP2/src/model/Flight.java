@@ -14,14 +14,10 @@ public class Flight {
 	private int departure;
 	private int actualDeparture;
 	private int duration;
-	private Movement currentMovement;
 	private FlightStatus status = FlightStatus.WAITING;
-	
-	private Coordinate defaultCoordinate = null;
-	private Coordinate currCoordinate = null;
-	
 	private Airport fromAirport = null;
 	private Airport toAirport = null;
+	private Path path;
 	
 	// Constructor
 	public Flight(Airport fromAirport, Airport toAirport, int departure, int duration) {
@@ -37,7 +33,7 @@ public class Flight {
 		Coordinate tempStart = new Coordinate(fromAirport.getX(),fromAirport.getY());
 		Coordinate tempEnd = new Coordinate(toAirport.getX(),toAirport.getY());
 		
-		currentMovement = new Movement(tempStart,tempEnd,departure,duration);
+		path = new Path(tempStart,tempEnd,departure,duration);
 	}
 	
 	// Default getter methods
@@ -57,19 +53,6 @@ public class Flight {
 	// Used for precise flight duration calculation
 	public int getActualDeparture() { return actualDeparture; }
 	public void setActualDeparture(int actualDeparture) { this.actualDeparture = actualDeparture; }
-	
-	public synchronized Coordinate getCurrentCoordinate() {
-		
-		if(currCoordinate == null) {return defaultCoordinate;}
-		else {return currCoordinate;}
-		
-	}
-	
-	public synchronized void setCurrentCoordinate(int x, int y) {
-		
-		if(defaultCoordinate == null) {defaultCoordinate = new Coordinate(x,y);}
-		else {currCoordinate = new Coordinate(x,y);}
-	}
 		
 	// Converts time to a readable format
 	public String getDepartureString() {
@@ -80,25 +63,23 @@ public class Flight {
 	    return String.format("%02d:%02d", hours, minutes);
 	}
 	
-	public Movement getCurrentMovement() {
-		return currentMovement;
-	}
-	
-	public void setCurrentMovement(Movement m) {
-		this.currentMovement = m;
-	}
-	
 	public void resetMovement() {
-		currentMovement.setStart(new Coordinate(fromAirport.getX(), fromAirport.getY()));
-	    currentMovement.setEnd(new Coordinate(toAirport.getX(), toAirport.getY()));
-	    currentMovement.setStartTime(departure);
-	    currentMovement.setDuration(duration);
+		Coordinate start = new Coordinate(fromAirport.getX(), fromAirport.getY());
+	    Coordinate end = new Coordinate(toAirport.getX(), toAirport.getY());
+	    path.reset(start, end, departure, duration);
 	}
 	
 	public void depart(int time) {
 		actualDeparture = time;
-		currentMovement.setStartTime(time);
+		path.setStartTime(time);
 		status = FlightStatus.IN_FLIGHT;
 	}
 	
+	public Coordinate getPositionAt(int simulationTime) {
+	    return path.getPositionAt(simulationTime);
+	}
+
+	public Path getPath() {
+	    return path;
+	}
 }

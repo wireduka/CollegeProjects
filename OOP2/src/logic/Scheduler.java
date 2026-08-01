@@ -53,7 +53,7 @@ public class Scheduler implements Observer {
 		// Check active flights for landing
 		for(int i = 0 ; i < activeFlights.size();) {
 			Flight active = activeFlights.get(i);
-			if((active.getActualDeparture() + active.getDuration()) <= Controller.getInstance().getSimulationTime()) {
+			if((active.getActualDeparture() + active.getPath().getTotalDuration()) <= Controller.getInstance().getSimulationTime()) {
 				active.setStatus(Flight.FlightStatus.LANDED);
 				System.out.println("Flight:" + active.getFrom() + "->" + active.getTo() + " landed." + " Time: " + Controller.getInstance().getSimulationTime()); 			// DEBUG
 				activeFlights.remove(i);
