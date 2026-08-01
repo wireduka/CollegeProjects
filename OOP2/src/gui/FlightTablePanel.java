@@ -10,7 +10,7 @@ import logic.EventType;
 import logic.Observer;
 import model.Flight;
 import model.FlightTable;
-
+//Panel for showing the Flight Table
 public class FlightTablePanel extends Panel implements Observer{
 	
 	private FlightTable flightTable;

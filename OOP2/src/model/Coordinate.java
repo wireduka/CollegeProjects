@@ -1,5 +1,6 @@
 package model;
 
+// Used for calculating flight positions and object painting
 public class Coordinate {
 	
     private double x;

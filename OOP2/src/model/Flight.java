@@ -1,7 +1,5 @@
 package model;
 
-import logic.Controller;
-
 public class Flight {
 	
 	public enum FlightStatus{
@@ -69,16 +67,19 @@ public class Flight {
 	    path.reset(start, end, departure, duration);
 	}
 	
+	// Departs the flight
 	public void depart(int time) {
 		actualDeparture = time;
 		path.setStartTime(time);
 		status = FlightStatus.IN_FLIGHT;
 	}
 	
+	// Returns current flight position
 	public Coordinate getPositionAt(int simulationTime) {
 	    return path.getPositionAt(simulationTime);
 	}
 
+	// Returns the flight path object
 	public Path getPath() {
 	    return path;
 	}

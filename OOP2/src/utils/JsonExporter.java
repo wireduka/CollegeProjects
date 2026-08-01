@@ -16,14 +16,14 @@ import model.FlightTable;
 
 public class JsonExporter implements Exportable{
 	
-	@SuppressWarnings("unused")
+	// Classes used for json data exporting
 	private static class JsonAirport {
 	    String code;
 	    String name;
 	    int x;
 	    int y;
 	}
-	@SuppressWarnings("unused")
+
 	private static class JsonFlight {
 	    String from;
 	    String to;

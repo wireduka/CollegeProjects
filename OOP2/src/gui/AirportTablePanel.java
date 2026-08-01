@@ -4,10 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Checkbox;
 import java.awt.GridLayout;
 import java.awt.Label;
-import java.awt.List;
 import java.awt.Panel;
 import java.awt.ScrollPane;
-import java.awt.Scrollbar;
 
 import logic.Controller;
 import logic.EventType;
@@ -15,6 +13,7 @@ import logic.Observer;
 import model.Airport;
 import model.AirportTable;
 
+// Panel for showing the Airport Table
 public class AirportTablePanel extends Panel implements Observer{
 	
 	private AirportTable airportTable;

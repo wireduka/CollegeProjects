@@ -8,7 +8,7 @@ import java.awt.Panel;
 import logic.Controller;
 import logic.EventType;
 import logic.Observer;
-
+// Panel used for simulation handling (buttons)
 public class ControlPanel extends Panel implements Observer {
 	
 	private Label timeLabel = new Label("SIMULATION TIME: 00:00:00");

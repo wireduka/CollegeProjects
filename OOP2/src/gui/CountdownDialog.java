@@ -3,7 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.Label;
-
+// Used for inactivity Timer program shutdown
 public class CountdownDialog extends DefaultDialog implements WindowClosing{
 	
 	private Label countLabel = new Label("5",Label.CENTER);

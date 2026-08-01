@@ -25,7 +25,7 @@ public class CsvExporter implements Exportable {
 	public void write(File file) throws IOException{
 		
 		try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-			
+			// Writes airports
 			if(!airportTable.isEmpty()) { 
 				writer.println("# AIRPORTS");
 				writer.println("CODE,NAME,X,Y");
@@ -35,7 +35,7 @@ public class CsvExporter implements Exportable {
 				}
 				if(!flightTable.isEmpty()) writer.println();
 			}
-			
+			// Writes flights
 			if(!flightTable.isEmpty()) {
 				writer.println("# FLIGHTS");
 				writer.println("FROM,TO,DEPARTURE,DURATION");

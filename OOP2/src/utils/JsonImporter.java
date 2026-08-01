@@ -15,6 +15,7 @@ import exception.InvalidFileFormatException;
 
 public class JsonImporter implements Importable {
 	
+	// Classes used for json data importing
 	private static class JsonAirport {
 	    String code;
 	    String name;

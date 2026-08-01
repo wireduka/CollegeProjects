@@ -3,7 +3,7 @@ package gui;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
+// Interface used when X is pressed
 interface WindowClosing {
 	
 	
